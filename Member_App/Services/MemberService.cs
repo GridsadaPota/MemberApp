@@ -32,26 +32,57 @@ namespace Member_App.Services
              
         }
 
+        public bool DeleteMember(int id)
+        {
+            try 
+            {
+                string connectionstring = "Data Source=MSI\\SQLEXPRESS2019; Initial Catalog=Demo; User ID=sa; Password=1234; TrustServerCertificate=True";
+                SqlConnection conn = new SqlConnection(connectionstring);
+                string sql = "Delete from Member where Member_ID = "+id+" ";                
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
+                conn.Close();
+                return true;
+            }
+            catch (Exception ex) 
+            {
+                return false;
+            }
+        }
+
+        public bool EditMember(MemberModel memberModel)
+        {
+            try 
+            {
+               string connectionstring = "Data Source=MSI\\SQLEXPRESS2019; Initial Catalog=Demo; User ID=sa; Password=1234; TrustServerCertificate=True";
+                SqlConnection conn = new SqlConnection(connectionstring);
+                string sql = "Update Member set Member_Code = '" + memberModel.Member_Code + "' ";
+                sql += " ,Member_Name = '" + memberModel.Member_Name + "' ";
+                sql += " ,Modifire_Date=Getdate() ";
+                sql += " ,Member_Tel = '"+memberModel.Member_Tel+"'";
+                sql += " ,Member_LT = " + memberModel.Member_LT + "";
+                sql += " where Member_ID = "+memberModel.Member_ID+" ";
+            
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();  
+                conn.Close();
+                return true;        
+            }
+            catch (Exception ex) 
+            {
+                return false;
+            }
+        }
+
         public IEnumerable<MemberModel> GetAll()
         {
             try
             {
-                List<MemberModel> list = new List<MemberModel>();
-                //loop
-                //for (int i = 0; i < 5; i++) 
-                //{
-                //    MemberModel model = new MemberModel()
-                //    {
-                //        Member_ID = i,
-                //        Member_Code = "M00" + i.ToString(),
-                //        Member_Name = "F00" + i.ToString()
-                //    };
-                //    //add Model to list
-                //    list.Add(model);
-                //}
-
-
-
+                List<MemberModel> list = new List<MemberModel>();            
                 string connectionstring = "Data Source=MSI\\SQLEXPRESS2019; Initial Catalog=Demo; User ID=sa; Password=1234; TrustServerCertificate=True";
                 SqlConnection conn = new SqlConnection(connectionstring);
                 string sql = "select Member_ID,Member_Code,Member_Name,Member_Tel,Member_LT from Member";
@@ -70,8 +101,8 @@ namespace Member_App.Services
                         Member_ID = Convert.ToInt32(dt.Rows[i]["Member_ID"].ToString()),
                         Member_Code = dt.Rows[i]["Member_Code"].ToString(),
                         Member_Name = dt.Rows[i]["Member_Name"].ToString(),
-                        Member_Tel  = dt.Rows[i]["Member_Tel"].ToString(),
-                        Member_LT   =Convert.ToInt32(dt.Rows[i]["Member_LT"].ToString())
+                        Member_Tel = dt.Rows[i]["Member_Tel"].ToString(),
+                        Member_LT = string.IsNullOrEmpty(dt.Rows[i]["Member_LT"].ToString()) ? 0: Convert.ToInt32(dt.Rows[i]["Member_LT"].ToString()) 
 
                     };
                     //add Model to list
@@ -117,7 +148,7 @@ namespace Member_App.Services
                         Member_Code = dt.Rows[0]["Member_Code"].ToString(),
                         Member_Name = dt.Rows[0]["Member_Name"].ToString(),
                         Member_Tel = dt.Rows[0]["Member_Tel"].ToString(),
-                        Member_LT = Convert.ToInt32(dt.Rows[0]["Member_LT"].ToString())
+                        Member_LT = string.IsNullOrEmpty(dt.Rows[0]["Member_LT"].ToString()) ? 0 : Convert.ToInt32(dt.Rows[0]["Member_LT"].ToString())
 
                     };
                 }              

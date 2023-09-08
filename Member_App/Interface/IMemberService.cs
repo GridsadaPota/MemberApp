@@ -7,5 +7,10 @@ namespace Member_App.Interface
         IEnumerable<MemberModel> GetAll();
         bool AddMember(MemberModel memberModel);
         MemberModel GetMemberByid (int id);
+
+        bool EditMember (MemberModel memberModel);
+
+        bool DeleteMember (int id);    
+
     }
 }
